@@ -1,5 +1,11 @@
 # Chat Simulator
 
+[![CI](https://github.com/codeforgood-org/elixir-chat-sim/workflows/CI/badge.svg)](https://github.com/codeforgood-org/elixir-chat-sim/actions)
+[![Elixir](https://img.shields.io/badge/Elixir-1.14%20to%201.16-blueviolet.svg)](https://elixir-lang.org/)
+[![Erlang/OTP](https://img.shields.io/badge/Erlang%2FOTP-25%20to%2026-red.svg)](https://www.erlang.org/)
+[![License](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
+[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](CONTRIBUTING.md)
+
 A terminal-based chat application written in Elixir for learning and demonstration purposes.
 
 ## Features
@@ -33,7 +39,14 @@ A terminal-based chat application written in Elixir for learning and demonstrati
 - Elixir 1.14 or higher
 - Erlang/OTP 24 or higher
 
-### Setup
+### Quick Setup
+
+Use the automated setup script:
+```bash
+./scripts/setup.sh
+```
+
+Or manually:
 
 1. Clone the repository:
 ```bash
@@ -66,6 +79,18 @@ mix run -e "ChatSimulator.CLI.main()"
 ```bash
 mix escript.build
 ./chat_simulator
+```
+
+#### Option 3: Docker
+
+```bash
+docker-compose up
+```
+
+Or build manually:
+```bash
+./scripts/docker-build.sh
+docker run -it --rm chat-simulator:latest
 ```
 
 ### Commands
@@ -167,6 +192,13 @@ mix test test/chat_simulator/user_test.exs
 
 ### Code Quality
 
+Run all checks at once:
+```bash
+./scripts/test.sh
+```
+
+Or individually:
+
 Format code:
 ```bash
 mix format
@@ -182,6 +214,11 @@ Run dialyzer (type checking):
 mix dialyzer
 ```
 
+Clean build artifacts:
+```bash
+./scripts/clean.sh
+```
+
 ### Generating Documentation
 
 ```bash
@@ -194,26 +231,50 @@ Then open `doc/index.html` in your browser.
 
 ```
 elixir-chat-sim/
-├── lib/
+├── lib/                      # Application code
 │   ├── chat_simulator.ex
 │   └── chat_simulator/
-│       ├── auth.ex
-│       ├── cli.ex
-│       ├── message.ex
-│       ├── storage.ex
-│       └── user.ex
-├── test/
+│       ├── auth.ex          # Authentication
+│       ├── cli.ex           # Command-line interface
+│       ├── message.ex       # Message handling
+│       ├── storage.ex       # Data persistence
+│       └── user.ex          # User management
+├── test/                     # Test suite
 │   ├── test_helper.exs
+│   ├── integration_test.exs
 │   └── chat_simulator/
 │       ├── auth_test.exs
 │       ├── message_test.exs
 │       ├── storage_test.exs
 │       └── user_test.exs
-├── config/
+├── config/                   # Configuration
+│   ├── config.exs
+│   ├── dev.exs
+│   ├── test.exs
+│   ├── prod.exs
+│   └── runtime.exs
+├── scripts/                  # Helper scripts
+│   ├── setup.sh
+│   ├── test.sh
+│   ├── clean.sh
+│   └── docker-build.sh
+├── examples/                 # Usage examples
+│   ├── api_usage.exs
+│   └── automated_chat.exs
+├── .github/                  # GitHub configs
+│   ├── workflows/
+│   │   └── ci.yml
+│   ├── ISSUE_TEMPLATE/
+│   ├── PULL_REQUEST_TEMPLATE.md
+│   └── dependabot.yml
+├── Dockerfile
+├── docker-compose.yml
 ├── .formatter.exs
 ├── .credo.exs
-├── .gitignore
+├── CHANGELOG.md
+├── CODE_OF_CONDUCT.md
 ├── CONTRIBUTING.md
+├── SECURITY.md
 ├── LICENSE
 ├── mix.exs
 └── README.md
@@ -237,6 +298,20 @@ elixir-chat-sim/
 
 See [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines on how to contribute to this project.
 
+## Examples
+
+Check out the `examples/` directory for:
+
+- **api_usage.exs** - Using the API programmatically
+- **automated_chat.exs** - Simulated multi-user conversations
+
+Run examples:
+```bash
+mix compile
+elixir examples/api_usage.exs
+elixir examples/automated_chat.exs
+```
+
 ## Learning Resources
 
 This project demonstrates several Elixir concepts:
@@ -245,10 +320,12 @@ This project demonstrates several Elixir concepts:
 2. **Pattern Matching** - Command parsing and data extraction
 3. **Guards** - Function clause selection based on conditions
 4. **Agents** - State management for storage
-5. **Protocols** - Extensible behavior (potential enhancement)
-6. **File I/O** - Data persistence
-7. **Documentation** - Module and function documentation
-8. **Testing** - Comprehensive test suite with ExUnit
+5. **Configuration** - Environment-specific settings
+6. **Logging** - Application logging with Logger
+7. **File I/O** - Data persistence
+8. **Documentation** - Module and function documentation
+9. **Testing** - Comprehensive test suite with ExUnit
+10. **CI/CD** - Automated testing and deployment
 
 ## License
 

@@ -7,11 +7,10 @@ defmodule ChatSimulator.Storage do
   """
 
   use Agent
+  require Logger
 
   alias ChatSimulator.User
   alias ChatSimulator.Message
-
-  @storage_file ".chat_data.etf"
 
   @doc """
   Starts the storage agent.
@@ -21,6 +20,7 @@ defmodule ChatSimulator.Storage do
   @spec start_link(keyword()) :: Agent.on_start()
   def start_link(_opts \\ []) do
     initial_state = load_from_disk() || %{users: [], messages: []}
+    Logger.info("Starting Chat Simulator storage with #{length(initial_state.users)} users")
     Agent.start_link(fn -> initial_state end, name: __MODULE__)
   end
 
@@ -40,6 +40,8 @@ defmodule ChatSimulator.Storage do
   """
   @spec add_user(User.t()) :: :ok
   def add_user(user) do
+    Logger.debug("Adding user: #{user.username}")
+
     Agent.update(__MODULE__, fn state ->
       %{state | users: [user | state.users]}
     end)
@@ -83,6 +85,8 @@ defmodule ChatSimulator.Storage do
   """
   @spec add_message(Message.t()) :: :ok
   def add_message(message) do
+    Logger.debug("Adding message from #{message.from} to #{message.to}")
+
     Agent.update(__MODULE__, fn state ->
       %{state | messages: [message | state.messages]}
     end)
@@ -150,19 +154,46 @@ defmodule ChatSimulator.Storage do
 
   # Persistence operations
 
+  defp storage_file do
+    Application.get_env(:chat_simulator, :storage, [])
+    |> Keyword.get(:file, ".chat_data.etf")
+  end
+
+  defp auto_save? do
+    Application.get_env(:chat_simulator, :storage, [])
+    |> Keyword.get(:auto_save, true)
+  end
+
   defp save_to_disk do
-    Agent.get(__MODULE__, fn state ->
-      File.write(@storage_file, :erlang.term_to_binary(state))
-      state
-    end)
+    if auto_save?() do
+      Agent.get(__MODULE__, fn state ->
+        case File.write(storage_file(), :erlang.term_to_binary(state)) do
+          :ok ->
+            Logger.debug("Data saved to #{storage_file()}")
+
+          {:error, reason} ->
+            Logger.error("Failed to save data: #{inspect(reason)}")
+        end
+
+        state
+      end)
+    end
   end
 
   defp load_from_disk do
-    case File.read(@storage_file) do
+    file = storage_file()
+
+    case File.read(file) do
       {:ok, binary} ->
+        Logger.info("Loaded data from #{file}")
         :erlang.binary_to_term(binary)
 
-      {:error, _} ->
+      {:error, :enoent} ->
+        Logger.info("No existing data file found, starting fresh")
+        nil
+
+      {:error, reason} ->
+        Logger.error("Failed to load data: #{inspect(reason)}")
         nil
     end
   end
@@ -172,11 +203,13 @@ defmodule ChatSimulator.Storage do
   """
   @spec clear() :: :ok
   def clear do
+    Logger.debug("Clearing all storage data")
+
     Agent.update(__MODULE__, fn _state ->
       %{users: [], messages: []}
     end)
 
-    File.rm(@storage_file)
+    File.rm(storage_file())
     :ok
   end
 end
