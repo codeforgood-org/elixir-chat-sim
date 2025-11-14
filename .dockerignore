@@ -1,0 +1,37 @@
+# Build artifacts
+/_build
+/cover
+/deps
+/doc
+*.ez
+*.beam
+
+# Chat data
+.chat_data*.etf
+
+# Git
+.git
+.gitignore
+
+# IDE
+.vscode
+.idea
+.elixir_ls
+
+# Documentation
+*.md
+!README.md
+
+# CI/CD
+.github
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Tests
+/test
+
+# Development
+.formatter.exs
+.credo.exs

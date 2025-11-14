@@ -1,3 +1,4 @@
+# Build artifacts
 /_build
 /cover
 /deps
@@ -6,5 +7,32 @@
 erl_crash.dump
 *.ez
 *.beam
+
+# Escript build
+/chat_simulator
+
+# Configuration
 /config/*.secret.exs
+
+# IDE and Editor
 .elixir_ls/
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Data files
+.chat_data.etf
+
+# Test coverage
+/cover/
+coveralls.json
+
+# Dialyzer
+/priv/plts/*.plt
+/priv/plts/*.plt.hash

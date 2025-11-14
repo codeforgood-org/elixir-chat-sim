@@ -1,0 +1,21 @@
+version: '3.8'
+
+services:
+  chat-simulator:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: chat-simulator:latest
+    container_name: chat-simulator
+    stdin_open: true
+    tty: true
+    volumes:
+      # Persist chat data
+      - chat-data:/app
+    environment:
+      - CHAT_DATA_FILE=/app/.chat_data.etf
+    restart: unless-stopped
+
+volumes:
+  chat-data:
+    driver: local
