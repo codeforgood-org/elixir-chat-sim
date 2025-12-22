@@ -33,7 +33,7 @@ RUN mix compile
 RUN mix escript.build
 
 # Runtime stage
-FROM alpine:3.18.4
+FROM alpine:3.23.2
 
 # Install runtime dependencies
 RUN apk add --no-cache \
